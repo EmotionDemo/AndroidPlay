@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/item_home"
+        android:icon="@mipmap/ic_home"
+        android:title="首页" />
+
+    <item
+        android:id="@+id/item_ground"
+        android:icon="@mipmap/ic_ground"
+        android:title="广场" />
+
+    <item
+        android:id="@+id/item_pub_num"
+        android:icon="@mipmap/ic_pub_unpressed"
+        android:title="公众号" />
+    <item
+        android:id="@+id/item_project"
+        android:icon="@mipmap/ic_pro_un_pressed"
+        android:title="项目" />
+    <item
+        android:id="@+id/item_mine"
+        android:icon="@mipmap/ic_mine"
+        android:title="我的" />
+
+</menu>
