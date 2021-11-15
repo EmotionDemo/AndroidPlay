@@ -1,5 +1,6 @@
 package com.example.test.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -94,6 +95,7 @@ public class SearchDetailActivity extends BaseActivity implements CollectEventLi
     private void updateDetailMore(String content) {
         searchDetailCall = service.getSearchDetail(canLoadMore ? ++defaultPage : defaultPage, content);
         executor.execute(() -> searchDetailCall.clone().enqueue(new Callback<SearchDetailModel>() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(Call<SearchDetailModel> call, Response<SearchDetailModel> response) {
                 int responseCode = response.code();
@@ -158,9 +160,6 @@ public class SearchDetailActivity extends BaseActivity implements CollectEventLi
                         iv_noMsg.setVisibility(View.VISIBLE);
                         return;
                     }
-                    /*
-                     * if (size < 16) { updateDetailMore(query); }
-                     */
                     searchDetailAdapter = new SearchAndPubAdapter(mContext, response.body(), SearchDetailActivity.this);
                     if (data.getDatas().size() < data.getSize()-1) {
                         searchDetailAdapter.setLoadMore(false);

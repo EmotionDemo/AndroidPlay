@@ -30,12 +30,6 @@ public class App extends Application {
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(getClient())
                 .build();
-        // 200 - 服务器成功返回网页
-        // 404 - 请求的网页不存在
-        // 503 - 服务不可用
-        Constant.errorMap.put(200, "服务器成功返回");
-        Constant.errorMap.put(404, "请求不存在");
-        Constant.errorMap.put(503, "服务不可用");
         mContext = this.getApplicationContext();
         //注册一个sp
         SpUtil.setEditor(mContext);
