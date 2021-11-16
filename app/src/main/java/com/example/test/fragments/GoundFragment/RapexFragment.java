@@ -55,8 +55,8 @@ public class RapexFragment extends BaseFragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         service = App.getApi(Api.class);
         mHandler = new Handler(Looper.getMainLooper(), new RapexDataCallBack());
         initData();

@@ -1,6 +1,6 @@
 package com.example.test.activity
 
-import android.os.Bundle
+import android.os.*
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -14,6 +14,7 @@ import com.example.test.activity.model.Api
 import com.example.test.activity.model.ParameData
 import com.example.test.activity.model.RapexDetailModel
 import com.example.test.adaper.RapexDetailAdapter
+import com.example.test.callback.MyCallBack
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,13 +30,12 @@ class RapexActivity : BaseActivity() {
     private var mAdapter: RapexDetailAdapter? = null
     private var canLoadMore: Boolean = true
     private var contentId: Int = 0
+    private var myHandler: Handler? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_rapex)
-    }
-
-    override fun onResume() {
-        super.onResume()
+        myHandler = Handler(Looper.myLooper()!!, RapexDetailCallBack())
         data = intent.getStringExtra("artId").toString()
         val dataParam = JSON.parseObject(data, ParameData::class.java)
         val tvTitle: TextView = findViewById(R.id.tvRapexTitle)
@@ -55,20 +55,12 @@ class RapexActivity : BaseActivity() {
                     Toast.makeText(baseContext, "网络请求失败", Toast.LENGTH_SHORT).show()
                     return
                 }
-                val body = response.body()
-                rvRapexDetail = findViewById(R.id.rvRapexDetail)
-                mAdapter = RapexDetailAdapter(baseContext)
-                if (body?.data?.datas?.size!! < body.data.size) {
-                    mAdapter?.setNoMore(true)
-                    mAdapter?.setLoadMore(false)
-                } else {
-                    mAdapter?.setNoMore(false)
-                    mAdapter?.setLoadMore(true)
-                }
-                val linearManager = LinearLayoutManager(baseContext, RecyclerView.VERTICAL, false)
-                rvRapexDetail?.layoutManager = linearManager
-                mAdapter?.setModel(body)
-                rvRapexDetail?.adapter = mAdapter
+                val bodyStr =JSON.toJSONString(response.body())
+                val msg = myHandler?.obtainMessage()
+                val bundle = Bundle()
+                bundle.putString("rapexBean", bodyStr)
+                msg?.data = bundle
+                myHandler?.sendMessage(msg!!)
             }
 
             override fun onFailure(call: Call<RapexDetailModel>, t: Throwable) {
@@ -76,7 +68,13 @@ class RapexActivity : BaseActivity() {
                 Toast.makeText(baseContext, "网络请求失败", Toast.LENGTH_SHORT).show()
             }
         })
-        loadMore()
+    }
+
+
+
+    override fun onResume() {
+        super.onResume()
+
     }
 
     /**
@@ -132,5 +130,27 @@ class RapexActivity : BaseActivity() {
                 callRapexDetail.clone().cancel()
             }
         })
+    }
+
+   inner class RapexDetailCallBack : MyCallBack() {
+        override fun handleMessage(msg: Message): Boolean {
+            rvRapexDetail = findViewById(R.id.rvRapexDetail)
+            mAdapter = RapexDetailAdapter(baseContext)
+            val rapexStr = msg.data.getString("rapexBean")
+            var body = JSON.parseObject(rapexStr,RapexDetailModel::class.java)
+            if (body?.data?.datas?.size!! < body.data.size) {
+                mAdapter?.setNoMore(true)
+                mAdapter?.setLoadMore(false)
+            } else {
+                mAdapter?.setNoMore(false)
+                mAdapter?.setLoadMore(true)
+            }
+            val linearManager = LinearLayoutManager(baseContext, RecyclerView.VERTICAL, false)
+            rvRapexDetail?.layoutManager = linearManager
+            mAdapter?.setModel(body)
+            rvRapexDetail?.adapter = mAdapter
+            loadMore()
+           return false
+        }
     }
 }

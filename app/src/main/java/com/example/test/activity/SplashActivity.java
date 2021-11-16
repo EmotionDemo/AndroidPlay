@@ -25,6 +25,7 @@ import com.bumptech.glide.request.target.Target;
 import com.example.test.R;
 import com.example.test.callback.TimeOutListener;
 
+import java.util.HashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 

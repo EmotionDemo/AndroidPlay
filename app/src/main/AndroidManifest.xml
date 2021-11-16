@@ -16,11 +16,14 @@
         android:theme="@style/Theme.Design.Light.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:name=".activity.DynamicActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.RapexActivity"
             android:exported="false" />
         <activity
             android:name=".activity.LoginActivity"
-            android:launchMode="singleTop"></activity>
+            android:launchMode="singleTop" />
         <activity
             android:name=".activity.MainActivity"
             android:excludeFromRecents="true" />

@@ -1,6 +1,8 @@
 package com.example.test.activity.model;
 
-public class CreateAuthorization {
+import java.io.Serializable;
+
+public class CreateAuthorization implements Serializable {
     /**
      * A list of scopes that this authorization is in.
      */

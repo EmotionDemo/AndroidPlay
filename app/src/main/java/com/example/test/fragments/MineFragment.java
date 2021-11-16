@@ -1,5 +1,7 @@
 package com.example.test.fragments;
 
+import static com.example.test.util.SpUtil.getUser;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,8 +36,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.example.test.util.SpUtil.getUser;
-
 public class MineFragment extends Fragment {
     private TextView tvUserNickName, tvLevel, tvRank, tvCoin;
     private Call<UserInfoModel> infoModelCall;
@@ -44,7 +44,7 @@ public class MineFragment extends Fragment {
     private Executor executor = Executors.newSingleThreadExecutor();
     private LinearLayout llOut;
     private boolean isNotLogin;
-
+    private LinearLayout llSkin;
     public MineFragment() {
     }
 
@@ -73,6 +73,8 @@ public class MineFragment extends Fragment {
         tvRank = view.findViewById(R.id.tvRank);
         tvCoin = view.findViewById(R.id.tvCoin);
         llOut = view.findViewById(R.id.llOut);
+        llSkin = view.findViewById(R.id.llSkin);
+
         //退出登录
         logOut();
         setUserLocalData();

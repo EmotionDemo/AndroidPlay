@@ -3,14 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/MownTest/app/src/main/res/layout/activity_dynamic.xml" value="0.1375" />
         <entry key="..\:/MownTest/app/src/main/res/layout/activity_login.xml" value="0.15760869565217392" />
         <entry key="..\:/MownTest/app/src/main/res/layout/activity_main.xml" value="0.20364583333333333" />
         <entry key="..\:/MownTest/app/src/main/res/layout/activity_rapex.xml" value="0.25" />
         <entry key="..\:/MownTest/app/src/main/res/layout/activity_search.xml" value="0.20364583333333333" />
+        <entry key="..\:/MownTest/app/src/main/res/layout/fragment_dynamic.xml" value="0.1375" />
         <entry key="..\:/MownTest/app/src/main/res/layout/fragment_home.xml" value="0.20364583333333333" />
         <entry key="..\:/MownTest/app/src/main/res/layout/fragment_mine.xml" value="0.16304347826086957" />
         <entry key="..\:/MownTest/app/src/main/res/layout/fragment_nav.xml" value="0.1" />
         <entry key="..\:/MownTest/app/src/main/res/layout/layout_header.xml" value="0.20364583333333333" />
+        <entry key="..\:/MownTest/app/src/main/res/layout/layout_item_dynamic.xml" value="0.67" />
         <entry key="..\:/MownTest/app/src/main/res/layout/layout_item_ground.xml" value="0.17346014492753623" />
         <entry key="..\:/MownTest/app/src/main/res/layout/layout_item_load_more.xml" value="0.20364583333333333" />
         <entry key="..\:/MownTest/app/src/main/res/layout/layout_item_nav.xml" value="0.17346014492753623" />
@@ -25,7 +28,7 @@
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
-        <option name="scale" value="0.20364583333333333" />
+        <option name="scale" value="0.67" />
       </ProjectState>
     </option>
   </component>
