@@ -36,6 +36,14 @@ class RapexActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_rapex)
         myHandler = Handler(Looper.myLooper()!!, RapexDetailCallBack())
+        initData()
+        loadMore()
+    }
+
+    /**
+     * 初始化搜索列表
+     */
+    private fun initData() {
         data = intent.getStringExtra("artId").toString()
         val dataParam = JSON.parseObject(data, ParameData::class.java)
         val tvTitle: TextView = findViewById(R.id.tvRapexTitle)
@@ -55,7 +63,7 @@ class RapexActivity : BaseActivity() {
                     Toast.makeText(baseContext, "网络请求失败", Toast.LENGTH_SHORT).show()
                     return
                 }
-                val bodyStr =JSON.toJSONString(response.body())
+                val bodyStr = JSON.toJSONString(response.body())
                 val msg = myHandler?.obtainMessage()
                 val bundle = Bundle()
                 bundle.putString("rapexBean", bodyStr)
@@ -70,12 +78,6 @@ class RapexActivity : BaseActivity() {
         })
     }
 
-
-
-    override fun onResume() {
-        super.onResume()
-
-    }
 
     /**
      * 加载更多
@@ -132,12 +134,12 @@ class RapexActivity : BaseActivity() {
         })
     }
 
-   inner class RapexDetailCallBack : MyCallBack() {
+    inner class RapexDetailCallBack : MyCallBack() {
         override fun handleMessage(msg: Message): Boolean {
             rvRapexDetail = findViewById(R.id.rvRapexDetail)
             mAdapter = RapexDetailAdapter(baseContext)
             val rapexStr = msg.data.getString("rapexBean")
-            var body = JSON.parseObject(rapexStr,RapexDetailModel::class.java)
+            var body = JSON.parseObject(rapexStr, RapexDetailModel::class.java)
             if (body?.data?.datas?.size!! < body.data.size) {
                 mAdapter?.setNoMore(true)
                 mAdapter?.setLoadMore(false)
@@ -149,8 +151,7 @@ class RapexActivity : BaseActivity() {
             rvRapexDetail?.layoutManager = linearManager
             mAdapter?.setModel(body)
             rvRapexDetail?.adapter = mAdapter
-            loadMore()
-           return false
+            return false
         }
     }
 }
