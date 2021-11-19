@@ -22,44 +22,46 @@ class RapexDetailAdapter(var mContext: Context) : RecyclerView.Adapter<RecyclerV
     private var itemLoadMore: Boolean = false
     private var itemType: Int = -1
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val viewNormal = LayoutInflater.from(mContext).inflate(R.layout.layout_item_search_detail, parent, false)
-        val viewLoadMore = LayoutInflater.from(mContext).inflate(R.layout.layout_item_load_more, parent, false)
-        val viewNoMore = LayoutInflater.from(mContext).inflate(R.layout.layout_item_no_more, parent, false)
+        val viewNormal =
+            LayoutInflater.from(mContext).inflate(R.layout.layout_item_search_detail, parent, false)
+        val viewLoadMore =
+            LayoutInflater.from(mContext).inflate(R.layout.layout_item_load_more, parent, false)
+        val viewNoMore =
+            LayoutInflater.from(mContext).inflate(R.layout.layout_item_no_more, parent, false)
         return when (itemType) {
             ITEM_NOMORE -> VHNoMore(viewNoMore)
             ITEM_LOAD_MORE -> VHLoadMore(viewLoadMore)
             else -> VH(viewNormal)
         }
-
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val datasInfo = model.data.datas.get(position)
-        val user = datasInfo.shareUser
-        val chapterName = datasInfo.chapterName
-        val niceDate = datasInfo.niceDate
-        val niceShareDate = datasInfo.niceShareDate
-        val isLove = datasInfo.isCollect
-        val title = datasInfo.title
 
-        when(itemType){
-            ITEM_NORMAL ->{
+
+        when (itemType) {
+            ITEM_NORMAL -> {
                 holder as VH
+                val datasInfo = model.data.datas.get(position)
+                val user = datasInfo.shareUser
+                val chapterName = datasInfo.chapterName
+                val niceDate = datasInfo.niceDate
+                val niceShareDate = datasInfo.niceShareDate
+                val isLove = datasInfo.isCollect
+                val title = datasInfo.title
                 holder.tvAuthorDetail.text = user
                 holder.tvArcTypeDetail.text = chapterName
                 holder.tvTimeDetail.text = if (niceDate == null) niceShareDate else niceDate
                 holder.ivLove.setBackgroundResource(if (isLove) R.mipmap.ic_zaned else R.mipmap.ic_unzan)
                 holder.tv_artTitleDetail.text = title
             }
-            ITEM_LOAD_MORE-> {
+            ITEM_LOAD_MORE -> {
                 holder as VHLoadMore
                 holder.vLoadMore.visibility = View.VISIBLE
             }
-            ITEM_NOMORE->{
+            ITEM_NOMORE -> {
                 holder as VHNoMore
                 holder.vNoMore.visibility = View.VISIBLE
             }
-
         }
 
     }
@@ -68,15 +70,15 @@ class RapexDetailAdapter(var mContext: Context) : RecyclerView.Adapter<RecyclerV
         if (model.data == null) {
             return 0
         }
-        return model.data.datas.size
+        return model.data.datas.size+1
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (itemCount == position + 1) {
-            if (itemLoadMore) {
+        if (position + 1 == itemCount) {
+            if (this.itemLoadMore) {
                 itemType = ITEM_LOAD_MORE
             }
-            if (itemNoMore) {
+            if (this.itemNoMore) {
                 itemType = ITEM_NOMORE
             }
         } else {

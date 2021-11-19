@@ -37,7 +37,6 @@ class RapexActivity : BaseActivity() {
         setContentView(R.layout.activity_rapex)
         myHandler = Handler(Looper.myLooper()!!, RapexDetailCallBack())
         initData()
-        loadMore()
     }
 
     /**
@@ -58,7 +57,10 @@ class RapexActivity : BaseActivity() {
         callRapexDetail = service.showRapexDetail(searchPage, contentId)
         //网络请求回调
         callRapexDetail.clone().enqueue(object : Callback<RapexDetailModel> {
-            override fun onResponse(call: Call<RapexDetailModel>, response: Response<RapexDetailModel>) {
+            override fun onResponse(
+                call: Call<RapexDetailModel>,
+                response: Response<RapexDetailModel>
+            ) {
                 if (response.code() != 200 || response.body() == null) {
                     Toast.makeText(baseContext, "网络请求失败", Toast.LENGTH_SHORT).show()
                     return
@@ -83,17 +85,15 @@ class RapexActivity : BaseActivity() {
      * 加载更多
      */
     private fun loadMore() {
-        with(rvRapexDetail) {
-            this?.addOnScrollListener(object : OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    if (!canScrollVertically(1)) {
-                        //向下滑动到底部
-                        updateData()
-                    }
+        rvRapexDetail?.addOnScrollListener(object : OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (!rvRapexDetail?.canScrollVertically(1)!!) {
+                    //向下滑动到底部
+                    updateData()
                 }
-            })
-        }
+            }
+        })
     }
 
     /**
@@ -102,9 +102,10 @@ class RapexActivity : BaseActivity() {
     fun updateData() {
         mAdapter?.setLoadMore(true)
         mAdapter?.setNoMore(false)
-        callRapexDetail = service.showRapexDetail(if (canLoadMore) ++searchPage else searchPage, contentId)
+        callRapexDetail =
+            service.showRapexDetail(if (canLoadMore) ++searchPage else searchPage, contentId)
         callRapexDetail.clone().enqueue(object : Callback<RapexDetailModel> {
-            override fun onResponse(call: Call<RapexDetailModel>, response: Response<RapexDetailModel>) {
+            override fun onResponse(call: Call<RapexDetailModel>,response: Response<RapexDetailModel>) {
                 if (response.code() != 200) {
                     mAdapter?.setLoadMore(false)
                     mAdapter?.setNoMore(true)
@@ -113,7 +114,7 @@ class RapexActivity : BaseActivity() {
                     return
                 }
                 val body = response.body()
-                if (body?.data?.size == 0) {
+                if (body?.data?.datas?.size!! < body.data?.size!!) {
                     mAdapter?.setLoadMore(false)
                     mAdapter?.setNoMore(true)
                 } else {
@@ -121,7 +122,7 @@ class RapexActivity : BaseActivity() {
                     mAdapter?.setNoMore(false)
                     canLoadMore = true
                 }
-                mAdapter?.updateModel(body!!)
+                mAdapter?.updateModel(body)
             }
 
             override fun onFailure(call: Call<RapexDetailModel>, t: Throwable) {
@@ -151,6 +152,7 @@ class RapexActivity : BaseActivity() {
             rvRapexDetail?.layoutManager = linearManager
             mAdapter?.setModel(body)
             rvRapexDetail?.adapter = mAdapter
+            loadMore()
             return false
         }
     }

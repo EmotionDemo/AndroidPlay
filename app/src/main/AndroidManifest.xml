@@ -13,11 +13,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Design.Light.NoActionBar"
-        tools:ignore="GoogleAppIndexingWarning">
-        <activity
-            android:name=".activity.DynamicActivity"
-            android:exported="false" />
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:targetApi="m">
         <activity
             android:name=".activity.RapexActivity"
             android:exported="false" />
