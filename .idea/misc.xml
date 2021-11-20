@@ -19,13 +19,12 @@
         <entry key="..\:/MownTest/app/src/main/res/layout/layout_item_nav.xml" value="0.17346014492753623" />
         <entry key="..\:/MownTest/app/src/main/res/layout/layout_item_search_detail.xml" value="0.33" />
         <entry key="..\:/MownTest/app/src/main/res/layout/layout_search_detail.xml" value="0.20364583333333333" />
+        <entry key="..\:/TestDemo/AndroidPlay/app/src/main/res/layout/activity_rapex.xml" value="0.16458333333333333" />
+        <entry key="..\:/TestDemo/AndroidPlay/app/src/main/res/layout/layout_item_search_detail.xml" value="0.16458333333333333" />
       </map>
     </option>
   </component>
-  <component name="ProjectPlainTextFileTypeManager">
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/test/activity/MainActivityTestt.kt" />
-  </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="VisualizationToolProject">

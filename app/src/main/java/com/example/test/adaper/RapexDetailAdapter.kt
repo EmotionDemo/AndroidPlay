@@ -7,10 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.test.R
 import com.example.test.activity.model.RapexDetailModel
+import com.example.test.callback.CollectEventListener
 
 class RapexDetailAdapter(var mContext: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -21,6 +23,9 @@ class RapexDetailAdapter(var mContext: Context) : RecyclerView.Adapter<RecyclerV
     private var itemNoMore: Boolean = false
     private var itemLoadMore: Boolean = false
     private var itemType: Int = -1
+    private lateinit var loveListener:(ImageView,Int) -> Unit
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val viewNormal =
             LayoutInflater.from(mContext).inflate(R.layout.layout_item_search_detail, parent, false)
@@ -36,8 +41,6 @@ class RapexDetailAdapter(var mContext: Context) : RecyclerView.Adapter<RecyclerV
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
-
         when (itemType) {
             ITEM_NORMAL -> {
                 holder as VH
@@ -48,10 +51,14 @@ class RapexDetailAdapter(var mContext: Context) : RecyclerView.Adapter<RecyclerV
                 val niceShareDate = datasInfo.niceShareDate
                 val isLove = datasInfo.isCollect
                 val title = datasInfo.title
+                val id = datasInfo.id
                 holder.tvAuthorDetail.text = user
                 holder.tvArcTypeDetail.text = chapterName
-                holder.tvTimeDetail.text = if (niceDate == null) niceShareDate else niceDate
+                holder.tvTimeDetail.text = niceDate ?: niceShareDate
                 holder.ivLove.setBackgroundResource(if (isLove) R.mipmap.ic_zaned else R.mipmap.ic_unzan)
+                holder.rlZan.setOnClickListener {
+                    loveListener.invoke(holder.ivLove, id)
+                }
                 holder.tv_artTitleDetail.text = title
             }
             ITEM_LOAD_MORE -> {
@@ -70,7 +77,7 @@ class RapexDetailAdapter(var mContext: Context) : RecyclerView.Adapter<RecyclerV
         if (model.data == null) {
             return 0
         }
-        return model.data.datas.size+1
+        return model.data.datas.size + 1
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -96,6 +103,7 @@ class RapexDetailAdapter(var mContext: Context) : RecyclerView.Adapter<RecyclerV
         internal var tv_artTitleDetail: TextView = itemView.findViewById(R.id.tv_artTitleDetail)
         internal var tvArcTypeDetail: TextView = itemView.findViewById(R.id.tvArcTypeDetail)
         internal var ivLove: ImageView = itemView.findViewById(R.id.ivZan)
+        internal var rlZan: RelativeLayout = itemView.findViewById(R.id.rl_zan)
     }
 
     inner class VHLoadMore(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -128,4 +136,10 @@ class RapexDetailAdapter(var mContext: Context) : RecyclerView.Adapter<RecyclerV
         this.notifyDataSetChanged()
     }
 
+    /**
+     * 设置点赞监听
+     */
+    fun setLoveListener(listener: (ImageView,Int)->Unit){
+        this.loveListener = listener
+    }
 }

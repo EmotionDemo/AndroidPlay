@@ -21,7 +21,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class App extends Application {
     private static Retrofit retrofit;
     private static Context mContext;
-
     @Override
     public void onCreate() {
         super.onCreate();

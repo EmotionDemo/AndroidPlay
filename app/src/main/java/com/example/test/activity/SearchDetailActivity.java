@@ -208,11 +208,7 @@ public class SearchDetailActivity extends BaseActivity implements CollectEventLi
         try {
             Method method = clazz.getDeclaredMethod("setDuration", Integer.class);
             method.invoke(200);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }
