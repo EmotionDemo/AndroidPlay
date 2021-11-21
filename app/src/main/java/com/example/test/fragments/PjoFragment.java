@@ -30,7 +30,6 @@ import com.example.test.adaper.CidsAdapter;
 import com.example.test.adaper.ProjectsAdapter;
 import com.example.test.callback.CollectEventListener;
 import com.example.test.callback.MyCallBack;
-import com.example.test.callback.OnCidClickListener;
 import com.example.test.util.ViewTransUtil;
 
 import java.util.ArrayList;

@@ -1,13 +1,11 @@
 package com.example.test.adaper;
 
 import android.content.Context;
-import android.media.Image;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -16,9 +14,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.alibaba.fastjson.JSON;
 import com.example.test.R;
+import com.example.test.activity.AndroidActivity;
 import com.example.test.activity.model.HomeArticleModel;
 import com.example.test.callback.CollectEventListener;
+import com.example.test.common.TitleToDetailData;
 
 import java.util.List;
 
@@ -29,6 +30,8 @@ public class HomeArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private static final int VIEW_TYPE_LOADER = 1;
     // 点赞
     private CollectEventListener collectEventListener;
+    private String title,link;
+    private VH holder;
 
     public void setHomeArticleModels(HomeArticleModel homeArticleModels, RecyclerView recyclerArticle) {
         this.homeArticleModels = homeArticleModels;
@@ -52,9 +55,12 @@ public class HomeArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             return;
         }
         if (holder instanceof VH) {
+            this.holder = (VH) holder;
             HomeArticleModel.DataBean.DatasBean datasBean = homeArticleModels.getData().getDatas().get(position);
             int articleId = datasBean.getId();
             boolean isCollect = datasBean.isCollect();
+            title = datasBean.getTitle();
+            link = datasBean.getLink();
             ((VH) holder).tvType.setText(datasBean.getSuperChapterName());
             ((VH) holder).tvTitle.setText(datasBean.getTitle());
             ((VH) holder).tvTime.setText(datasBean.getNiceDate());
@@ -68,6 +74,13 @@ public class HomeArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         collectEventListener.onCollectEvent(((VH) holder).ivHomeZan, articleId);
                     }
                 }
+            });
+            ((VH) holder).rlContent.setOnClickListener((v)->{
+                Intent intent = new Intent(mContext, AndroidActivity.class);
+                TitleToDetailData rapexToDetailData = new TitleToDetailData(title, link);
+                String toJSONString = JSON.toJSONString(rapexToDetailData);
+                intent.putExtra("articleInfo", toJSONString);
+                mContext.startActivity(intent);
             });
         } else if (holder instanceof LoadMoreViewHolder) {
             ((LoadMoreViewHolder) holder).ll_load_more.setVisibility(View.VISIBLE);
@@ -102,7 +115,7 @@ public class HomeArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     class VH extends RecyclerView.ViewHolder {
         private TextView tvAuthor, tvTime, tvTitle, tvType;
-        private RelativeLayout rlZan;
+        private RelativeLayout rlZan,rlContent;
         private ImageView ivHomeZan;
 
         VH(@NonNull View itemView) {
@@ -113,6 +126,7 @@ public class HomeArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             tvType = itemView.findViewById(R.id.tvArcType);
             rlZan = itemView.findViewById(R.id.rl_home_zan);
             ivHomeZan = itemView.findViewById(R.id.ivHomeZan);
+            rlContent = itemView.findViewById(R.id.rlContent);
         }
     }
 

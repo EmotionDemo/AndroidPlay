@@ -91,7 +91,7 @@ public class SplashActivity extends BaseActivity implements TimeOutListener {
                         timeOutListener.onTimeout(false);
                         btnSkip.setVisibility(View.VISIBLE);
                         Runnable runnableStart = () -> {
-                            SplashActivity.this.startActivity();
+                            startActivity();
                         };
                         myHandler.postDelayed(runnableStart, downTotal);
                         btnSkip.setText("点击跳过 " + countDown + " 秒");
@@ -105,10 +105,12 @@ public class SplashActivity extends BaseActivity implements TimeOutListener {
                     }
                 }).into(ivSplash);
     }
-
+    private boolean isStartActivity = false;
     private void startActivity() {
-        startActivity(new Intent(SplashActivity.this, MainActivity.class));
-        finish();
+        if(!isStartActivity){
+            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+            finish();
+        }
     }
 
     /**
@@ -165,5 +167,6 @@ public class SplashActivity extends BaseActivity implements TimeOutListener {
     protected void onDestroy() {
         super.onDestroy();
         cutDownTimeout = true;
+        isStartActivity = true;
     }
 }

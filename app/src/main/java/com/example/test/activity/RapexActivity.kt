@@ -167,7 +167,7 @@ class RapexActivity() : BaseActivity(){
     inner class RapexDetailCallBack : MyCallBack() {
         override fun handleMessage(msg: Message): Boolean {
             rvRapexDetail = findViewById(R.id.rvRapexDetail)
-            mAdapter = RapexDetailAdapter(baseContext)
+            mAdapter = RapexDetailAdapter(this@RapexActivity)
             val rapexStr = msg.data.getString("rapexBean")
             var body = JSON.parseObject(rapexStr, RapexDetailModel::class.java)
             if (body?.data?.datas?.size!! < body.data.size) {

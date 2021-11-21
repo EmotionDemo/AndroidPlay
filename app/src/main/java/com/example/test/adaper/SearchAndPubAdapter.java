@@ -1,6 +1,8 @@
 package com.example.test.adaper;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +14,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.alibaba.fastjson.JSON;
 import com.example.test.R;
+import com.example.test.activity.AndroidActivity;
 import com.example.test.activity.model.base.BaseModel;
-import com.example.test.activity.model.SearchDetailModel;
 import com.example.test.activity.model.base.DataBean;
 import com.example.test.callback.CollectEventListener;
+import com.example.test.common.TitleToDetailData;
 
 import java.util.List;
 
-public class SearchAndPubAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class SearchAndPubAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     private Context mContext;
     private BaseModel model;
     private List<DataBean.DatasBean> datasBeans;
@@ -73,8 +77,10 @@ public class SearchAndPubAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             String niceDate = datasBeans.get(position).getNiceDate();
             String niceShareDate = datasBeans.get(position).getNiceShareDate();
             int id = datasBeans.get(position).getId();
+            String title = datasBeans.get(position).getTitle();
+            String  link = datasBeans.get(position).getLink();
             // 设置文章标题
-            ((VH) holder).tv_artTitleDetail.setText(datasBeans.get(position).getTitle());
+            ((VH) holder).tv_artTitleDetail.setText(title);
             // 设置文章类型
             ((VH) holder).tvArcTypeDetail.setText(datasBeans.get(position).getChapterName());
             // 设置文章作者或者分享人
@@ -84,6 +90,13 @@ public class SearchAndPubAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ((VH) holder).ivZan.setBackgroundResource(isCollect ? R.mipmap.ic_zaned : R.mipmap.ic_unzan);
             ((VH) holder).rlZan.setOnClickListener(v -> {
                 collectEventListener.onCollectEvent(((VH) holder).ivZan, id);
+            });
+            ((VH) holder).rlItemContent.setOnClickListener((v)->{
+                Intent intent = new Intent((Activity)mContext  , AndroidActivity.class);
+                TitleToDetailData rapexToDetailData = new TitleToDetailData(title, link);
+                String toJSONString = JSON.toJSONString(rapexToDetailData);
+                intent.putExtra("articleInfo", toJSONString);
+                mContext.startActivity(intent);
             });
         } else if (holder instanceof LoadMoreViewHolder) {
             ((LoadMoreViewHolder) holder).ll_load_more.setVisibility(View.VISIBLE);
@@ -142,7 +155,7 @@ public class SearchAndPubAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         private TextView tvAuthorDetail, tvTimeDetail, tv_artTitleDetail, tvArcTypeDetail;
         private RelativeLayout rlZan;
         private ImageView ivZan;
-
+        private RelativeLayout rlItemContent;
         VH(@NonNull View itemView) {
             super(itemView);
             tvTimeDetail = itemView.findViewById(R.id.tvTimeDetail);
@@ -151,6 +164,7 @@ public class SearchAndPubAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             tvArcTypeDetail = itemView.findViewById(R.id.tvArcTypeDetail);
             rlZan = itemView.findViewById(R.id.rl_zan);
             ivZan = itemView.findViewById(R.id.ivZan);
+            rlItemContent = itemView.findViewById(R.id.rlItemContent);
         }
     }
 

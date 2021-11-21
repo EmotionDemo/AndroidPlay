@@ -1,6 +1,8 @@
 package com.example.test.adaper;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +14,14 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.test.R;
+import com.example.test.activity.AndroidActivity;
 import com.example.test.activity.model.ProjectModel;
 import com.example.test.callback.CollectEventListener;
+import com.example.test.common.TitleToDetailData;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
@@ -32,6 +37,9 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int ITEM_NORMAL = 0;
     private boolean isLoadMore = false;
     private boolean itemNoMore = false;
+    private ProjectsAdapter.VH holder;
+    private String title;
+    private String link;
 
     @NonNull
     @Override
@@ -55,8 +63,11 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return;
         }
         if (holder instanceof VH) {
+            this.holder = (VH) holder;
             ProjectModel.DataBean.DatasBean datasBean = model.getData().getDatas().get(position);
             boolean isZaned = datasBean.isCollect();
+            title = datasBean.getTitle();
+            link = datasBean.getLink();
             Glide.with(mContext)
                     .load(datasBean.getEnvelopePic())
                     .error(R.mipmap.ic_error)
@@ -70,10 +81,18 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     .setText(datasBean.getNiceDate() == null ? datasBean.getNiceShareDate() : datasBean.getNiceDate());
             ((VH) holder).tvTitle.setText(datasBean.getTitle());
             ((VH) holder).tvDes.setText(datasBean.getDesc());
+            ((VH) holder).rlPjoContent.setOnClickListener((v)->{
+                Intent intent = new Intent((Activity)mContext  , AndroidActivity.class);
+                TitleToDetailData rapexToDetailData = new TitleToDetailData(title, link);
+                String toJSONString = JSON.toJSONString(rapexToDetailData);
+                intent.putExtra("articleInfo", toJSONString);
+                mContext.startActivity(intent);
+            });
             ((VH) holder).ivLove.setBackgroundResource(isZaned ? R.mipmap.ic_zaned : R.mipmap.ic_unzan);
             if (listener != null) {
                 listener.onCollectEvent(((VH) holder).ivLove, datasBean.getId());
             }
+
         } else if (holder instanceof LoadMoreVH) {
             ((LoadMoreVH) holder).ll_load_more.setVisibility(View.VISIBLE);
         } else if (holder instanceof NoMoreVH) {
@@ -97,6 +116,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private ImageView ivDes, ivLove;
         private TextView tvTitle, tvTime, tvDes, tvAuthor;
         private CardView cardPjo;
+        private LinearLayout rlPjoContent;
 
         public VH(@NonNull View itemView) {
             super(itemView);
@@ -107,6 +127,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ivDes = itemView.findViewById(R.id.ivPjo);
             ivLove = itemView.findViewById(R.id.ivLove);
             cardPjo = itemView.findViewById(R.id.cardPjo);
+            rlPjoContent = itemView.findViewById(R.id.rlPjoContent);
         }
     }
 
@@ -115,7 +136,6 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      */
     class LoadMoreVH extends RecyclerView.ViewHolder {
         private LinearLayout ll_load_more;
-
         public LoadMoreVH(@NonNull View itemView) {
             super(itemView);
             ll_load_more = itemView.findViewById(R.id.ll_load_more);
@@ -127,7 +147,6 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      */
     class NoMoreVH extends RecyclerView.ViewHolder {
         private LinearLayout ll_no_more;
-
         public NoMoreVH(@NonNull View itemView) {
             super(itemView);
             ll_no_more = itemView.findViewById(R.id.ll_no_more);
