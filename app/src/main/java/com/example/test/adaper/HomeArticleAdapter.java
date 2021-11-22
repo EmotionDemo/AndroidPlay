@@ -30,8 +30,6 @@ public class HomeArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private static final int VIEW_TYPE_LOADER = 1;
     // 点赞
     private CollectEventListener collectEventListener;
-    private String title,link;
-    private VH holder;
 
     public void setHomeArticleModels(HomeArticleModel homeArticleModels, RecyclerView recyclerArticle) {
         this.homeArticleModels = homeArticleModels;
@@ -55,12 +53,11 @@ public class HomeArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             return;
         }
         if (holder instanceof VH) {
-            this.holder = (VH) holder;
             HomeArticleModel.DataBean.DatasBean datasBean = homeArticleModels.getData().getDatas().get(position);
             int articleId = datasBean.getId();
             boolean isCollect = datasBean.isCollect();
-            title = datasBean.getTitle();
-            link = datasBean.getLink();
+            String title = datasBean.getTitle();
+            String link = datasBean.getLink();
             ((VH) holder).tvType.setText(datasBean.getSuperChapterName());
             ((VH) holder).tvTitle.setText(datasBean.getTitle());
             ((VH) holder).tvTime.setText(datasBean.getNiceDate());

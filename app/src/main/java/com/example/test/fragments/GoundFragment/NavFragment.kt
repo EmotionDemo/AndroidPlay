@@ -40,6 +40,8 @@ class NavFragment() : BaseFragment() {
         executor = Executors.newSingleThreadExecutor()
         callNavData = service.showNavData()
         navAdapter = NavAdapter(context)
+        myHandler = Handler(Looper.myLooper()!!, NavCallBack())
+        showNavData()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -47,13 +49,6 @@ class NavFragment() : BaseFragment() {
         view = inflater.inflate(R.layout.fragment_nav, container, false)
         pbrNav = view.findViewById(R.id.pbrNav)
         return view
-    }
-
-    override fun onResume() {
-        super.onResume()
-        myHandler = Handler(Looper.myLooper()!!, NavCallBack())
-        showNavData()
-
     }
 
     /**

@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rlPjoContent"
     android:layout_width="match_parent"
     android:layout_height="235dp"
     android:layout_centerInParent="true"
     android:layout_marginTop="3dp"
-    android:id="@+id/rlPjoContent"
     android:layout_marginBottom="3dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardPjo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
+        android:background="@color/text_Grey"
         android:foreground="?attr/selectableItemBackground"
         app:cardCornerRadius="20dp"
-        android:background="@color/text_Grey"
         app:cardElevation="7dp">
 
         <LinearLayout
@@ -54,11 +53,10 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="55dp"
                     android:layout_marginEnd="5dp"
-                    android:maxLines="2"
                     android:ellipsize="end"
+                    android:maxLines="2"
                     android:text="项目使用Android官方的Jetpack Compose完成，遵循MVVM架构思路，以下为本项目用到的框架"
                     android:textSize="14sp" />
-
 
 
                 <LinearLayout

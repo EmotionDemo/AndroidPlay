@@ -37,9 +37,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int ITEM_NORMAL = 0;
     private boolean isLoadMore = false;
     private boolean itemNoMore = false;
-    private ProjectsAdapter.VH holder;
-    private String title;
-    private String link;
+
 
     @NonNull
     @Override
@@ -63,11 +61,10 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return;
         }
         if (holder instanceof VH) {
-            this.holder = (VH) holder;
             ProjectModel.DataBean.DatasBean datasBean = model.getData().getDatas().get(position);
             boolean isZaned = datasBean.isCollect();
-            title = datasBean.getTitle();
-            link = datasBean.getLink();
+            String title = datasBean.getTitle();
+            String link = datasBean.getLink();
             Glide.with(mContext)
                     .load(datasBean.getEnvelopePic())
                     .error(R.mipmap.ic_error)
@@ -81,8 +78,8 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     .setText(datasBean.getNiceDate() == null ? datasBean.getNiceShareDate() : datasBean.getNiceDate());
             ((VH) holder).tvTitle.setText(datasBean.getTitle());
             ((VH) holder).tvDes.setText(datasBean.getDesc());
-            ((VH) holder).rlPjoContent.setOnClickListener((v)->{
-                Intent intent = new Intent((Activity)mContext  , AndroidActivity.class);
+            ((VH) holder).rlPjoContent.setOnClickListener((v) -> {
+                Intent intent = new Intent(mContext, AndroidActivity.class);
                 TitleToDetailData rapexToDetailData = new TitleToDetailData(title, link);
                 String toJSONString = JSON.toJSONString(rapexToDetailData);
                 intent.putExtra("articleInfo", toJSONString);
@@ -136,6 +133,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      */
     class LoadMoreVH extends RecyclerView.ViewHolder {
         private LinearLayout ll_load_more;
+
         public LoadMoreVH(@NonNull View itemView) {
             super(itemView);
             ll_load_more = itemView.findViewById(R.id.ll_load_more);
@@ -147,6 +145,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      */
     class NoMoreVH extends RecyclerView.ViewHolder {
         private LinearLayout ll_no_more;
+
         public NoMoreVH(@NonNull View itemView) {
             super(itemView);
             ll_no_more = itemView.findViewById(R.id.ll_no_more);
@@ -199,9 +198,9 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);
-        if (holder instanceof VH){
+        if (holder instanceof VH) {
             ImageView imageView = ((VH) holder).ivDes;
-            if (imageView!=null){
+            if (imageView != null) {
                 Glide.with(mContext)
                         .clear(imageView);
             }
