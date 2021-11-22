@@ -30,6 +30,7 @@ public class HomeArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private static final int VIEW_TYPE_LOADER = 1;
     // 点赞
     private CollectEventListener collectEventListener;
+
     public void setHomeArticleModels(HomeArticleModel homeArticleModels, RecyclerView recyclerArticle) {
         this.homeArticleModels = homeArticleModels;
     }

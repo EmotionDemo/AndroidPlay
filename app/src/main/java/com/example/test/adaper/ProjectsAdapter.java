@@ -38,6 +38,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private boolean isLoadMore = false;
     private boolean itemNoMore = false;
 
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -75,7 +76,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((VH) holder).tvAuthor.setText(datasBean.getAuthor());
             ((VH) holder).tvTime
                     .setText(datasBean.getNiceDate() == null ? datasBean.getNiceShareDate() : datasBean.getNiceDate());
-            ((VH) holder).tvTitle.setText(title);
+            ((VH) holder).tvTitle.setText(datasBean.getTitle());
             ((VH) holder).tvDes.setText(datasBean.getDesc());
             ((VH) holder).rlPjoContent.setOnClickListener((v) -> {
                 Intent intent = new Intent(mContext, AndroidActivity.class);
