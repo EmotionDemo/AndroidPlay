@@ -1,5 +1,6 @@
 package com.example.test.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,16 +25,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.test.App;
 import com.example.test.R;
 import com.example.test.activity.model.Api;
+import com.example.test.activity.model.BaseInfoModel;
 import com.example.test.activity.model.PjoTypeModel;
 import com.example.test.activity.model.ProjectModel;
 import com.example.test.adaper.CidsAdapter;
 import com.example.test.adaper.ProjectsAdapter;
 import com.example.test.callback.CollectEventListener;
 import com.example.test.callback.MyCallBack;
+import com.example.test.util.CollectUtil;
+import com.example.test.util.ImgUtil;
 import com.example.test.util.ViewTransUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -45,9 +50,11 @@ public class PjoFragment extends BaseFragment implements CollectEventListener {
     private RecyclerView rvPjo, rvCids;
     private ProjectsAdapter adapter;
     private CidsAdapter cidsAdapter;
-    private Executor executor = Executors.newFixedThreadPool(5);
+    private final Executor executor = Executors.newFixedThreadPool(5);
     private Call<ProjectModel> callPjo;
     private Call<PjoTypeModel> callPjoType;
+    private Call<BaseInfoModel> callCollect;
+    private Call<BaseInfoModel> callUnCollect;
     private Api service;
     private int showPage;
     private LinearLayout llCids;
@@ -63,7 +70,8 @@ public class PjoFragment extends BaseFragment implements CollectEventListener {
     private ProgressBar probarPjo;
     private boolean isInitLoadMore;
     private static final String TAG = "PjoFragment";
-    private List<String> cidPan = new ArrayList<>();
+    private final List<String> cidPan = new ArrayList<>();
+
     public PjoFragment() {
     }
 
@@ -90,7 +98,7 @@ public class PjoFragment extends BaseFragment implements CollectEventListener {
         probarPjo.setVisibility(View.VISIBLE);
         RelativeLayout rl_cids = view.findViewById(R.id.rl_cids);
         adapter = new ProjectsAdapter(this.getContext());
-        adapter.setListener(this);
+        adapter.setCollectListener(this);
         cidsAdapter = new CidsAdapter(this.getContext());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rvPjo.setLayoutManager(linearLayoutManager);
@@ -116,13 +124,13 @@ public class PjoFragment extends BaseFragment implements CollectEventListener {
             changeTitle(cidName);
             llCids.setVisibility(View.GONE);
             ViewTransUtil.setGoneTrans(llCids);
-            if (!cidPan.isEmpty() &&!cidPan.get(0).equals(cidName)){
+            if (!cidPan.isEmpty() && !cidPan.get(0).equals(cidName)) {
                 //回到顶部
                 rvPjo.scrollToPosition(0);
             }
-            if (!cidPan.contains(cidName)){
+            if (!cidPan.contains(cidName)) {
                 cidPan.add(cidName);
-            }else {
+            } else {
                 cidPan.remove(cidName);
                 cidPan.add(cidName);
             }
@@ -132,7 +140,7 @@ public class PjoFragment extends BaseFragment implements CollectEventListener {
 
     /**
      * 加载所有项目分类
-     * 
+     *
      * @return
      */
     private void initCids() {
@@ -193,12 +201,13 @@ public class PjoFragment extends BaseFragment implements CollectEventListener {
         // 使用项目分类首个字段
         callPjo = service.showPjoArticle((canLoadMore ? ++showPage : showPage), cid);
         executor.execute(() -> callPjo.clone().enqueue(new Callback<ProjectModel>() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(Call<ProjectModel> call, Response<ProjectModel> response) {
                 if (response.code() == 200) {
                     ProjectModel model = response.body();
                     List<ProjectModel.DataBean.DatasBean> datas = model.getData().getDatas();
-                    if (datas.size() == 0 || !isInitLoadMore ) {
+                    if (datas.size() == 0 || !isInitLoadMore) {
                         adapter.setItemNoMore(true);
                         adapter.setLoadMore(false);
                     } else {
@@ -235,7 +244,7 @@ public class PjoFragment extends BaseFragment implements CollectEventListener {
                     return false;
                 }
                 if (cidStr.size() > 0) {
-                    cidsAdapter.setCids(cidStr.toArray(new String[] {}));
+                    cidsAdapter.setCids(cidStr.toArray(new String[]{}));
                     LinearLayoutManager cidManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL,
                             false);
                     rvCids.setLayoutManager(cidManager);
@@ -252,7 +261,7 @@ public class PjoFragment extends BaseFragment implements CollectEventListener {
 
     /**
      * 获取当前type类型的项目
-     * 
+     *
      * @param cidHeader
      */
     private void getCurrentTypePjo(int cidHeader) {
@@ -303,18 +312,59 @@ public class PjoFragment extends BaseFragment implements CollectEventListener {
 
     /**
      * 红心点击事件回调
-     * 
+     *
      * @param view
      * @param id
      */
     @Override
-    public void onCollectEvent(ImageView view, int id) {
+    public void onCollectEvent(ImageView ivZan, int id) {
+        callCollect = service.collectArticle(id);
+        callUnCollect = service.unCollectArticle(id);
+        CollectUtil.Companion.setResImgId( ImgUtil.getImgResId(ivZan));
+        int resImgId = CollectUtil.Companion.getResImgId();
+        if (resImgId == R.mipmap.ic_unzan){
+           executor.execute(()->{
+               callCollect.clone().enqueue(new Callback<BaseInfoModel>() {
+                   @Override
+                   public void onResponse(Call<BaseInfoModel> call, Response<BaseInfoModel> response) {
+                       // 点赞
+                       CollectUtil.Companion.setCollect(response, ivZan, R.mipmap.ic_zaned, Objects.requireNonNull(getActivity()));
+                       probarPjo.setVisibility(View.GONE);
+                   }
+
+                   @Override
+                   public void onFailure(Call<BaseInfoModel> call, Throwable t) {
+                       callCollect.clone().cancel();
+                       probarPjo.setVisibility(View.GONE);
+                   }
+               });
+           });
+        }else {
+            executor.execute(()->{
+                callUnCollect.clone().enqueue(new Callback<BaseInfoModel>() {
+                    @Override
+                    public void onResponse(Call<BaseInfoModel> call, Response<BaseInfoModel> response) {
+                        // 取消点赞
+                        CollectUtil.Companion.setCollect(response, ivZan, R.mipmap.ic_unzan, Objects.requireNonNull(getActivity()));
+                        probarPjo.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseInfoModel> call, Throwable t) {
+                        callUnCollect.clone().cancel();
+                        probarPjo.setVisibility(View.GONE);
+                    }
+                });
+
+            });
+        }
+
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (!hidden){
+        if (!hidden) {
             llCids.setVisibility(View.GONE);
         }
     }

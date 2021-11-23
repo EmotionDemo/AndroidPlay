@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,7 +29,7 @@ import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOption
 public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
     private ProjectModel model;
-    private CollectEventListener listener;
+    private CollectEventListener<ImageView> listener;
     // 没有更多
     private static final int ITEM_NO_MORE = 2;
     // 加载更多
@@ -37,7 +38,6 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int ITEM_NORMAL = 0;
     private boolean isLoadMore = false;
     private boolean itemNoMore = false;
-
 
     @NonNull
     @Override
@@ -86,9 +86,11 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 mContext.startActivity(intent);
             });
             ((VH) holder).ivLove.setBackgroundResource(isZaned ? R.mipmap.ic_zaned : R.mipmap.ic_unzan);
-            if (listener != null) {
-                listener.onCollectEvent(((VH) holder).ivLove, datasBean.getId());
-            }
+            ((VH) holder).rlPjoLove.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onCollectEvent(((VH) holder).ivLove, datasBean.getId());
+                }
+            });
 
         } else if (holder instanceof LoadMoreVH) {
             ((LoadMoreVH) holder).ll_load_more.setVisibility(View.VISIBLE);
@@ -114,7 +116,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private TextView tvTitle, tvTime, tvDes, tvAuthor;
         private CardView cardPjo;
         private LinearLayout rlPjoContent;
-
+        private RelativeLayout rlPjoLove;
         public VH(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvTitle);
@@ -125,6 +127,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ivLove = itemView.findViewById(R.id.ivLove);
             cardPjo = itemView.findViewById(R.id.cardPjo);
             rlPjoContent = itemView.findViewById(R.id.rlPjoContent);
+            rlPjoLove = itemView.findViewById(R.id.rlPjoLove);
         }
     }
 
@@ -165,10 +168,6 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return ITEM_NORMAL;
     }
 
-    public void setListener(CollectEventListener listener) {
-        this.listener = listener;
-    }
-
     public void setModel(ProjectModel model) {
         this.model = model;
     }
@@ -205,6 +204,13 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         .clear(imageView);
             }
         }
+    }
 
+    /**
+     * 设置点赞监听器
+     * @param listener
+     */
+    public void setCollectListener(CollectEventListener<ImageView> listener){
+        this.listener = listener;
     }
 }

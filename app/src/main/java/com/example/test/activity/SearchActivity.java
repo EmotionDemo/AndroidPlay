@@ -73,6 +73,7 @@ public class SearchActivity extends BaseActivity {
     private void callHotInfo() {
         executor.execute(() -> {
             hotSearchModelCall.enqueue(new Callback<HotSearchModel>() {
+                @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onResponse(Call<HotSearchModel> call, Response<HotSearchModel> response) {
                     if (response.code() == 200) {
@@ -129,16 +130,26 @@ public class SearchActivity extends BaseActivity {
         rlBack.setOnClickListener((v) -> {
             finish();
         });
+        //清除历史记录布局
         ll_clearAll = findViewById(R.id.ll_clearAll);
+        //搜索输入框
         svSearch = findViewById(R.id.sv_search);
+        //清除搜索框中的背景
         svSearch.findViewById(androidx.appcompat.R.id.search_plate).setBackground(null);
         svSearch.findViewById(androidx.appcompat.R.id.submit_area).setBackground(null);
+        //热搜rv
         rv_hot = findViewById(R.id.rv_hot);
+        //历史记录搜索，设置宽高及可见性
         rvSearHis = findViewById(R.id.rv_sear_his);
         rvSearHis.setMaxHeight(widthAndHeight[1] / 2);
-        rvSearHis.setVisibility(View.GONE);
-        ll_clearAll.setVisibility(View.GONE);
+        rvSearHis.setVisibility(View.VISIBLE);
+        if (rvSearHis.getVisibility() == View.VISIBLE){
+            ll_clearAll.setVisibility(View.VISIBLE);
+        }else {
+            ll_clearAll.setVisibility(View.GONE);
+        }
         hisModels = new ArrayList<>();
+        //在子线程中操作数据库查询搜索历史记录
         executor.execute(() -> {
             List<SearchHisModel> allHisInfo = searchHisDao.getAllHisInfo();
             if (allHisInfo != null && allHisInfo.size() != 0) {
@@ -147,6 +158,7 @@ public class SearchActivity extends BaseActivity {
                 }
             }
         });
+        //搜索适配器
         searchAdapter = new SearchAdapter(this, hisModels);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(true);
@@ -154,6 +166,7 @@ public class SearchActivity extends BaseActivity {
         rvSearHis.setAdapter(searchAdapter);
         // 搜索框输入
         svSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (TextUtils.isEmpty(query)) {
@@ -224,6 +237,7 @@ public class SearchActivity extends BaseActivity {
         if (searchAdapter != null) {
             searchAdapter.setOnItemTextClickListener((query, position) -> {
                 svSearch.setQuery(query, true);
+                //历史记录默认不显示，当点击搜索框后进行显示
                 rvSearHis.setVisibility(View.VISIBLE);
             });
         }
@@ -249,6 +263,7 @@ public class SearchActivity extends BaseActivity {
             rvSearHis.setVisibility(View.VISIBLE);
             setClearAllShow();
         });
+        //清除焦点
         svSearch.clearFocus();
     }
 
@@ -285,7 +300,7 @@ public class SearchActivity extends BaseActivity {
      * 使用主线程注册的Handler将子线程的执行结果拿到，然后在主线程中做UI的更新
      */
     @SuppressLint("HandlerLeak")
-    private Handler myHandler = new Handler(Looper.getMainLooper()) {
+    private final Handler myHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);

@@ -190,7 +190,7 @@ class RapexActivity() : BaseActivity(){
                     executor.execute {
                         callNoLove.clone().enqueue(object : Callback<BaseInfoModel> {
                             override fun onResponse( call: Call<BaseInfoModel>,  response: Response<BaseInfoModel>) {
-                                setLove(response, v!!, R.mipmap.ic_unzan)
+                                setLove(response, v, R.mipmap.ic_unzan)
                             }
 
                             override fun onFailure(call: Call<BaseInfoModel>, t: Throwable) {

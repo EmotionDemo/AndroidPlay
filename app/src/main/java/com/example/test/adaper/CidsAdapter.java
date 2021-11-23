@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.test.R;
+import com.example.test.callback.CollectEventListener;
 import com.example.test.callback.OnCidClickListener;
 
 public class CidsAdapter extends RecyclerView.Adapter<CidsAdapter.VH> {
@@ -70,5 +72,5 @@ public class CidsAdapter extends RecyclerView.Adapter<CidsAdapter.VH> {
      */
     public void setOnCidClickListener(OnCidClickListener listener) {
         this.onCidClickListener = listener;
-    }
+    } 
 }
