@@ -170,6 +170,7 @@ public class HomeFragment extends BaseFragment implements TimeOutListener, Colle
                     public void run() {
                         // 刷新当前界面数据
                         callArticleInfo();
+                        callBannerInfo();
                     }
                 }, 1000);
             }
@@ -222,6 +223,7 @@ public class HomeFragment extends BaseFragment implements TimeOutListener, Colle
      * 获取banner信息
      */
     private void callBannerInfo() {
+        callBanner = service.getHomeBanner();
         executor.execute(() -> callBanner.enqueue(new Callback<HomeBannerBean>() {
             @Override
             public void onResponse(Call<HomeBannerBean> call, Response<HomeBannerBean> response) {
@@ -389,6 +391,7 @@ public class HomeFragment extends BaseFragment implements TimeOutListener, Colle
         // 刷新数据
         if (event.getEvent() == 1000) {
             refreshFirst();
+            callBannerInfo();
         }
     }
 
