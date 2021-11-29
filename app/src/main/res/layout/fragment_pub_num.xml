@@ -1,48 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.PubNumFragment">
 
     <include
         android:id="@+id/rl_header"
-        layout="@layout/layout_header"
-        />
+        layout="@layout/layout_header" />
+
     <ProgressBar
         android:id="@+id/pgbPubNum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        />
+        android:layout_centerInParent="true" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPub"
-        android:layout_below="@+id/rl_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        />
+        android:layout_below="@+id/rl_header"
+        android:background="@color/white" />
+
     <LinearLayout
         android:id="@+id/llPublisher"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@drawable/cornar"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
+
         <com.yang.flowlayoutlibrary.FlowLayout
             android:id="@+id/flvPublisher"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:backgroundResource="@drawable/bg_frame"
-            app:horizontalSpacing="15dp"
             android:layout_margin="5dp"
             android:paddingTop="10dp"
+            app:backgroundResource="@drawable/bg_frame"
+            app:horizontalSpacing="15dp"
             app:itemColor="@color/colorAccent"
             app:itemSize="15sp"
             app:textPaddingH="15dp"
             app:textPaddingV="8dp"
-            app:verticalSpacing="15dp"
-            />
+            app:verticalSpacing="15dp" />
     </LinearLayout>
 </RelativeLayout>

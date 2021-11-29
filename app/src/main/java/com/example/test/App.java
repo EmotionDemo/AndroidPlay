@@ -34,7 +34,6 @@ public class App extends Application {
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(getClient())
                 .build();
-
         CrashHandler.getInstance().init(this);
     }
 

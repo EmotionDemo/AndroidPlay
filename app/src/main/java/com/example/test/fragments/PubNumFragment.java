@@ -123,6 +123,7 @@ public class PubNumFragment extends BaseFragment implements CollectEventListener
                     bundle.putInt("publisherId", publisherIds.get(0));
                     message.setData(bundle);
                     myHandler.sendMessage(message);
+                    changeTitle(publisherNames.get(0));
                 }
 
                 @Override
@@ -203,6 +204,7 @@ public class PubNumFragment extends BaseFragment implements CollectEventListener
         // 使用项目分类首个字段
         pubNumHisModelCall = service.getPubNumHisData(mPublisherId, (canLoadMore ? ++showPage : showPage));
         executor.execute(() -> pubNumHisModelCall.clone().enqueue(new Callback<PubNumHisModel>() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(Call<PubNumHisModel> call, Response<PubNumHisModel> response) {
                 if (response.code() == 200) {
@@ -216,7 +218,6 @@ public class PubNumFragment extends BaseFragment implements CollectEventListener
                         adapter.setLoadMore(true);
                         adapter.setItemNoMore(false);
                         canLoadMore = true;
-                        adapter.notifyDataSetChanged();
                     }
                 } else {
                     canLoadMore = false;
@@ -255,7 +256,9 @@ public class PubNumFragment extends BaseFragment implements CollectEventListener
             rlPubType.setOnClickListener(v -> {
                 if (llPublisher.getVisibility() == View.VISIBLE) {
                     llPublisher.setVisibility(View.GONE);
+
                     ViewTransUtil.setGoneTrans(llPublisher);
+                    rvPubNum.setClickable(true);
                     rvPubNum.setOnTouchListener(new View.OnTouchListener() {
                         @Override
                         public boolean onTouch(View v, MotionEvent event) {
@@ -264,6 +267,8 @@ public class PubNumFragment extends BaseFragment implements CollectEventListener
                     });
                 } else {
                     llPublisher.setVisibility(View.VISIBLE);
+                    rvPubNum.setClickable(false);
+
                     ViewTransUtil.setVisibleTrans(llPublisher);
                     rvPubNum.setOnTouchListener(new View.OnTouchListener() {
                         @Override

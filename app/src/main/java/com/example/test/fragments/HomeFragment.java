@@ -22,9 +22,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.example.test.App;
 import com.example.test.R;
+import com.example.test.activity.AndroidActivity;
 import com.example.test.activity.LoginActivity;
 import com.example.test.activity.model.Api;
 import com.example.test.activity.model.BaseInfoModel;
@@ -35,6 +37,7 @@ import com.example.test.callback.CollectEventListener;
 import com.example.test.callback.EventRefresh;
 import com.example.test.callback.MyCallBack;
 import com.example.test.callback.TimeOutListener;
+import com.example.test.common.TitleToDetailData;
 import com.example.test.util.CollectUtil;
 import com.example.test.util.ImgUtil;
 import com.stx.xhb.androidx.XBanner;
@@ -46,6 +49,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -147,6 +151,8 @@ public class HomeFragment extends BaseFragment implements TimeOutListener, Colle
             refreshLayout.setRefreshing(true);
             myHandler.postDelayed(() -> {
                 callArticleInfo();
+                //刷新banner数据
+                callBannerInfo();
             }, 1000);
         });
     }
@@ -259,8 +265,20 @@ public class HomeFragment extends BaseFragment implements TimeOutListener, Colle
             });
         }
         banner.setBannerData(models);
-        banner.loadImage((banner, model, view, position) -> Glide.with(getActivity())
+        banner.loadImage((banner, model, view, position) -> Glide.with(Objects.requireNonNull(getActivity()))
                 .load((homeBannerBean.getData().get(position).getImagePath())).centerCrop().into((ImageView) view));
+        banner.setOnItemClickListener(new XBanner.OnItemClickListener() {
+            @Override
+            public void onItemClick(XBanner banner, Object model, View view, int position) {
+                String link = homeBannerBean.getData().get(position).getUrl();
+                String title = homeBannerBean.getData().get(position).getTitle();
+                Intent intent = new Intent(getContext(), AndroidActivity.class);
+                TitleToDetailData rapexToDetailData = new TitleToDetailData(title, link);
+                String toJSONString = JSON.toJSONString(rapexToDetailData);
+                intent.putExtra("articleInfo", toJSONString);
+                Objects.requireNonNull(getContext()).startActivity(intent);
+            }
+        });
     }
 
     /**
