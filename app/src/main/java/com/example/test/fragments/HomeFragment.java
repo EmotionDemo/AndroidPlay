@@ -35,6 +35,7 @@ import com.example.test.callback.CollectEventListener;
 import com.example.test.callback.EventRefresh;
 import com.example.test.callback.MyCallBack;
 import com.example.test.callback.TimeOutListener;
+import com.example.test.util.CollectUtil;
 import com.example.test.util.ImgUtil;
 import com.stx.xhb.androidx.XBanner;
 import com.stx.xhb.androidx.entity.BaseBannerInfo;
@@ -176,6 +177,7 @@ public class HomeFragment extends BaseFragment implements TimeOutListener, Colle
         startTime = System.currentTimeMillis();
         endTime = startTime;
         callArticle = service.getHomeArticle(0);
+        progressBar.setVisibility(View.VISIBLE);
         executor.execute(() -> callArticle.clone().enqueue(new Callback<HomeArticleModel>() {
             @Override
             public void onResponse(Call<HomeArticleModel> call, Response<HomeArticleModel> response) {
@@ -194,6 +196,7 @@ public class HomeFragment extends BaseFragment implements TimeOutListener, Colle
                         refreshLayout.post(() -> {
                             refreshLayout.setRefreshing(false);
                         });
+                        progressBar.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "更新数据完成！", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -204,6 +207,7 @@ public class HomeFragment extends BaseFragment implements TimeOutListener, Colle
                 call.clone().cancel();
                 Toast.makeText(getContext(), "更新数据失败！", Toast.LENGTH_SHORT).show();
                 refreshLayout.setRefreshing(false);
+                progressBar.setVisibility(View.GONE);
             }
         }));
     }
@@ -302,15 +306,16 @@ public class HomeFragment extends BaseFragment implements TimeOutListener, Colle
         callCollect = service.collectArticle(id);
         callUnCollect = service.unCollectArticle(id);
         progressBar.setVisibility(View.VISIBLE);
-        resImgId = ImgUtil.getImgResId(ivZan);
+        CollectUtil.Companion.setResImgId(ImgUtil.getImgResId(ivZan));
         // 在子线程中发起网络请求
-        if (resImgId == R.mipmap.ic_unzan) {
+        if (CollectUtil.Companion.getResImgId() == R.mipmap.ic_unzan) {
             executor.execute(() -> {
                 callCollect.clone().enqueue(new Callback<BaseInfoModel>() {
                     @Override
                     public void onResponse(Call<BaseInfoModel> call, Response<BaseInfoModel> response) {
                         // 点赞
-                        setCollect(response, ivZan, R.mipmap.ic_zaned);
+                        CollectUtil.Companion.setCollect(response, ivZan, R.mipmap.ic_zaned, getContext());
+                        progressBar.setVisibility(View.GONE);
                     }
 
                     @Override
@@ -327,7 +332,8 @@ public class HomeFragment extends BaseFragment implements TimeOutListener, Colle
                     @Override
                     public void onResponse(Call<BaseInfoModel> call, Response<BaseInfoModel> response) {
                         // 取消点赞
-                        setCollect(response, ivZan, R.mipmap.ic_unzan);
+                        CollectUtil.Companion.setCollect(response, ivZan, R.mipmap.ic_unzan, getContext());
+                        progressBar.setVisibility(View.GONE);
                     }
 
                     @Override
@@ -340,28 +346,6 @@ public class HomeFragment extends BaseFragment implements TimeOutListener, Colle
         }
     }
 
-    /**
-     * 设置点赞
-     *
-     * @param response
-     * @param ivZan
-     */
-    private void setCollect(Response<BaseInfoModel> response, ImageView ivZan, int resId) {
-        if (response.code() != 200 || response.body() == null) {
-            Toast.makeText(HomeFragment.this.getActivity(), "请求失败！", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (response.body().getErrorCode() == -1001) {
-            Toast.makeText(HomeFragment.this.getActivity(), response.body().getErrorMsg(), Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(HomeFragment.this.getActivity(), LoginActivity.class));
-        }
-        int errorCode = response.body().getErrorCode();
-        if (errorCode == 0) {
-            ivZan.setBackgroundResource(resId);
-            resImgId = resId;
-        }
-        progressBar.setVisibility(View.GONE);
-    }
 
     /**
      * 由于adapter是在主线程中进行初始化，所以在主线程中设置注册

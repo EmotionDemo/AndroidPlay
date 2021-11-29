@@ -14,17 +14,23 @@ public class SpUtil {
 
     @SuppressLint("CommitPrefEdits")
     public static void setEditor(Context context) {
-        editor = context.getSharedPreferences("COOKIE", Context.MODE_PRIVATE).edit();
         mContext = context;
+        if (editor == null) {
+            editor = context.getSharedPreferences("COOKIE", Context.MODE_PRIVATE).edit();
+        }
     }
 
+    /**
+     * 获取Sp实例
+     * @return
+     */
     private static SharedPreferences getSp() {
         return mContext.getSharedPreferences("COOKIE", Context.MODE_PRIVATE);
     }
 
     /**
      * 设置cookie
-     * 
+     *
      * @param cookieSet
      */
     public static void putCookie(HashSet cookieSet) {
@@ -34,7 +40,7 @@ public class SpUtil {
 
     /**
      * 获取Cookie
-     * 
+     *
      * @return
      */
     public static Set<String> getCookie() {
@@ -43,7 +49,7 @@ public class SpUtil {
 
     /**
      * 保存用户信息
-     * 
+     *
      * @param userSet
      */
     public static void putUserInfo(String userSet) {
@@ -53,17 +59,17 @@ public class SpUtil {
 
     /***
      * 获取用户信息
-     * 
+     *
      * @return
      */
     public static String getUser() {
-        return getSp().getString("userInfo","");
+        return getSp().getString("userInfo", "");
     }
 
     /**
      * 清除本地Cookie
      */
-    public static void clearCookie(){
+    public static void clearCookie() {
         editor.remove("cookie").commit();
     }
 

@@ -20,19 +20,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @SuppressLint("Registered")
 public class App extends Application {
     private static Retrofit retrofit;
+    @SuppressLint("StaticFieldLeak")
     private static Context mContext;
     @Override
     public void onCreate() {
         super.onCreate();
+        mContext = this.getApplicationContext();
+        //注册sp
+        SpUtil.setEditor(mContext);
         CrashHandler.getInstance().init(this);
         retrofit = new Retrofit.Builder()
                 .baseUrl("https://www.wanandroid.com")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(getClient())
                 .build();
-        mContext = this.getApplicationContext();
-        //注册一个sp
-        SpUtil.setEditor(mContext);
+
         CrashHandler.getInstance().init(this);
     }
 

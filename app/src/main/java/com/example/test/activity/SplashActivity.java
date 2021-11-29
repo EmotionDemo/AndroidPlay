@@ -31,9 +31,9 @@ import java.util.concurrent.Executors;
 
 public class SplashActivity extends BaseActivity implements TimeOutListener {
     private static final String TAG = "SplashActivity";
-    private Handler myHandler = new Handler(Looper.getMainLooper());
-    private Executor executor = Executors.newSingleThreadExecutor();
-    private int downTotal = 5000;
+    private final Handler myHandler = new Handler(Looper.getMainLooper());
+    private final Executor executor = Executors.newSingleThreadExecutor();
+    private final int downTotal = 5000;
     private int countDown = downTotal / 1000;
     private Button btnSkip;
     private int loadPhoTimes;
